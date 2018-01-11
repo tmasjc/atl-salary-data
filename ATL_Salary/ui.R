@@ -1,6 +1,5 @@
 library(shiny)
-library(dplyr)
-library(ggplot2)
+library(plotly)
 
 # Define UI for application 
 shinyUI(fluidPage(
@@ -16,7 +15,7 @@ shinyUI(fluidPage(
     
     
     mainPanel(
-       
+        shiny::plotOutput('main')
     )
   )
 ))
