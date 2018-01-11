@@ -1,4 +1,6 @@
 library(dplyr)
+library(ggplot2)
+library(stringr)
 
 # Read data
 df <- read.csv("https://query.data.world/s/yywEX8qoMLyYeV4BymnF1sMm3tvsKa", header=TRUE, stringsAsFactors=FALSE)
