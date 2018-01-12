@@ -49,10 +49,17 @@ shinyServer(function(input, output, session) {
     
     # All or User selected points
     brushPts <- reactive({
+        # when none selected, return all rows
         if(is.null(input$selector_brush)){
-            dat
+            return(dat)
         }else{
-            brushedPoints(dat, input$selector_brush)
+            df <- brushedPoints(dat, input$selector_brush)
+            # error handling: Make sure user selects some mininum points
+            if(nrow(df) > 10){
+                df
+            }else{
+                dat
+            }
         }
     })
     
@@ -105,11 +112,11 @@ shinyServer(function(input, output, session) {
     # Plot 2 - dumbbell plot (Gender + Ethnic)
     output$ethnic <- renderPlotly({
         
-        ## error handling for too few samples
+        ## error handling: If only single gender is selected
         if(length(unique(grp_by_ethnic()$gender)) < 2){
             # Return a base object, not plotting anything meaningful
-            p <- ggplot(aes(ethnic, salary, text  = "Too few samples are selected."), data = brushPts())
-            return(ggplotly(p, tooltip = c("text")))
+            p <- ggplot(aes(ethnic, salary), data = brushPts())
+            return(ggplotly(p))
         }
         
         p <- grp_by_ethnic() %>% 
