@@ -2,7 +2,7 @@ This Shiny app explores the **Atlanta city employee salaries data for the Year 2
 
 Usage:
 
-**(1)** The __SELECTOR__ panel displays available data points. You may subset points by **click-and-drag partial area**. Click again on non-selected area to reset.
+**(1)** The __SELECTOR__ panel displays available data points. You may subset points by **click and drag partial area**. Click again on non-selected area to reset.
 
 Also, you may **toggle the colour parameter** by selecting,
 
