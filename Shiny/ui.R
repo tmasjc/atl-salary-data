@@ -29,7 +29,9 @@ shinyUI(fluidPage(
             ),
         tags$h6("TABLE I "),
         tags$p("Count at each combination of factor level"),
-        verbatimTextOutput("summ")
+        verbatimTextOutput("summ"),
+        br(),
+        span(icon("github"), a("Source Code", href = "https://github.com/tmasjc/ATL_Salary_Data"))
     ),
     column(8,
         # Enable user to select points using cursor
