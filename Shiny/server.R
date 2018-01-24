@@ -23,20 +23,16 @@ dat <- raw %>%
     # and simplify ethnic group to first word only
     mutate(ethnic = factor(stringr::str_extract(ethnic, "^[A-Z]?[a-z]+")))
 
-## Remove n rows of data
-# nrow(raw) - nrow(dat)
-
 
 # Server functions -------------------------------------------------------------
-
 
 # Explore 'gender', "age", or 'ethnic' variables on 'salary'
 shinyServer(function(input, output, session) {
     
-    # Set ggplot2 theme
-    old <- theme_set(theme_light() + theme(legend.position = "none"))
+    # Set ggplot2 theme 
+    old <- theme_set(theme_light() + theme(plot.title = element_text(size = 11), legend.position = "none"))
     
-    # Selector window - scatterplot (Age + Gender / Ethnic)
+    # Selector window (Age + Gender / Ethnic)
     output$selector <- renderPlot({
         dat %>% 
             ggplot(aes(age, salary)) +
@@ -44,7 +40,14 @@ shinyServer(function(input, output, session) {
             geom_point(position = position_jitter(width = 0.3, height = 0.1)) + 
             scale_y_continuous(labels = scales::dollar, limits = c(min(dat$salary), max(dat$salary) + 5e4)) + 
             labs(x = "Age", y = "Salary (USD)", col = toupper(as.character(input$col))) + 
-            theme(legend.position = c(0.1, 0.8), legend.text = element_text(size = 12)) # retrieve legend just for this plot
+            # retrieve legend for this plot only
+            theme(
+                legend.position = c(0.1, 0.8), 
+                legend.title = element_text(size = 16, family = "mono"), 
+                legend.text = element_text(size = 15, family = "mono"), 
+                # legend.key = element_rect(colour = 'gray', linetype = 'dashed'),
+                legend.key.width = unit(1, "cm")
+            )
     })
     
     # All or User selected points
@@ -89,7 +92,7 @@ shinyServer(function(input, output, session) {
             geom_line() + 
             geom_rug(sides = "l") +
             scaleY() + 
-            labs(x = "Age", y = "", col = "Gender")
+            labs(x = "", y = "", col = "Gender", title  = "Plot I: Salary By Age Group") 
         
         # Convert to interactive plot
         ggplotly(p, tooltip = c("text")) 
@@ -126,7 +129,7 @@ shinyServer(function(input, output, session) {
             # It is important to put geom_point last so that it overlaps the lines
             geom_point(size = 3) + 
             scaleY() +
-            labs(x = "Ethnic", y = "", col = "Gender") + 
+            labs(x = "", y = "", col = "Gender", title = "Plot II: Salary By Ethnic Group") + 
             # Hide this y-axis, we have one on the left already
             theme(axis.text.y = element_blank())
         

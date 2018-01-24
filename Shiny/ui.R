@@ -28,10 +28,9 @@ shinyUI(fluidPage(
             includeMarkdown("about_pt2.md")
             ),
         tags$h6("TABLE I "),
-        tags$p("Count at each combination of factor level"),
+        tags$p("Count at each combination of Ethnic - Gender"),
         verbatimTextOutput("summ"),
-        br(),
-        span(icon("github"), a("Source Code", href = "https://github.com/tmasjc/ATL_Salary_Data"))
+        br()
     ),
     column(8,
         # Enable user to select points using cursor
@@ -39,12 +38,14 @@ shinyUI(fluidPage(
         tags$p("Click and drag to select points"),
         plotOutput('selector', brush = brushOpts(id = "selector_brush")),
         # Split horizontal space evenly
-        tags$h6("PLOT I & II"),
-        splitLayout(
-            plotlyOutput("age"),
-            plotlyOutput("ethnic")
-        ),
-    hr() # Just a little more space
+        fluidRow(
+            column(6, plotlyOutput("age")),
+            column(6, plotlyOutput("ethnic"))
+        )
+    ),
+    column(12,
+        hr(), # Just a little more space
+        span(icon("github"), a("Source Code", href = "https://github.com/tmasjc/ATL_Salary_Data"))
     )
   )
 ))
