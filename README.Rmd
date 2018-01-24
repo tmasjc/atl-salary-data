@@ -1,0 +1,82 @@
+---
+title: "Atlanta City Employee Salaries 2015"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.width = 11)
+```
+
+### Overview
+
+This [Shiny app](http://yhat.io/shiny/atl-salary-data/) explores the Atlanta city employee salaries data for the Year 2015. In particular, the relationship between employee ``salary`` and variables such as ``gender``, ``age``, and ``ethnic group``.
+
+Dataset obtained from [data.world](https://data.world/brentbrewington/atlanta-city-employee-salaries), contributed by [Brent Brewington](https://github.com/bbrewington/atlanta-salary-data).
+
+The Shiny app consists of,
+
+- A **_Selector Panel_** which allows user to select points using cursor (click-and-drag)
+- **_Plot 1_** displays the relationship of employee ``median salary`` by ``age group``, seperated by ``gender``
+- **_Plot 2_** displays the relationship of employee ``median salary`` by ``ethnic group``, seperated by ``gender``
+- A **_Cross Table_** which tabulates count at each combination of ``ethnic group`` and ``gender``
+
+![Screen Shot](ss.png)
+
+### Motivation
+
+This Shiny app is meant as a simple exercise to demonstrate how unbalanced dataset can be misleading at times. 
+
+If we look at male and female ``median salary`` at various ``age group``, we might observe that *in general, male earns higher pay than female*.
+
+```{r, warning=FALSE}
+library(dplyr)
+
+raw <- readRDS("Data/atl_2015.RDS") %>% 
+    rename(ethnic = ethnic.origin, job = job.title, salary = annual.salary) %>% 
+    mutate(gender = factor(sex), ethnic = factor(ethnic)) %>% 
+    as_tibble()
+
+x_agegrp <- raw %>% group_by(age) %>% summarise(n = n()) %>% filter(n < 10) %>% pull(age) 
+
+# Ethnic group that has a sample size smaller than 30
+x_ethgrp <- raw %>% group_by(ethnic) %>% summarise(n = n()) %>% filter(n < 30) %>% droplevels() %>% pull(ethnic) 
+
+dat <- raw %>% 
+    # Filter small sample size group for both 'age' and 'ethnic'
+    filter(!age %in% x_agegrp &!ethnic %in% x_ethgrp) %>% 
+    # and simplify ethnic group to first word only
+    mutate(ethnic = factor(stringr::str_extract(ethnic, "^[A-Z]?[a-z]+")))
+```
+
+```{r}
+dat %>%
+    group_by(age, sex) %>% 
+    summarise(salary = median(salary)) %>% 
+    ggplot(aes(age, salary, col = sex, group = sex)) + 
+    scale_x_continuous(breaks = seq(20, 100, 10), limits = c(20, 70)) +
+    geom_line() + 
+    labs(x = "Age", y = "Median Salary", col = "Sex") +
+    theme(legend.position = "bottom")
+```
+
+However, if we look at male and female ``median salary`` by ``ethnic groups``, we notice that female's median salary does not seem to be lagging behind. *For Asian and White women, their median salary is actually higher than men by an obvious margin*.
+
+```{r}
+dat %>% 
+    group_by(ethnic, sex) %>% 
+    summarise(salary = median(salary)) %>% 
+    ggplot(aes(ethnic, salary, col = sex)) +
+    geom_line(col = "gray") +
+    geom_point() +
+    labs(x = "Ethnic Group", y = "Median Salary", col = "Sex") +
+    theme(legend.position = "bottom")
+```
+
+Tinker around the Shiny app to find out why is that so.
+
+
+
+
+
+
+
