@@ -1,4 +1,4 @@
-This Shiny app explores the **Atlanta city employee salaries data for the Year 2015**. In particular, the relationship between employee ``salary`` and variables such as ``gender``, ``age``, and ``ethnic group``.
+This Shiny app explores the **Atlanta city employee salaries data for the Year 2015**. In particular, the relationship between employee ``salary`` and variables such as ``gender``, ``age``, and ``ethnic group``. It is meant to serve as a **simple demonstration on how unbalanced dataset can be misleading at times**.
 
 Usage:
 
