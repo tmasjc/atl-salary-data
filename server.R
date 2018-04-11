@@ -73,7 +73,7 @@ shinyServer(function(input, output, session) {
     
     # Find median salary by ethnic
     grp_by_ethnic <- reactive({
-        brushPts() %>% group_by(gender, ethnic) %>% summarise(salary = median(salary))
+        brushPts() %>% group_by(gender, ethnic) %>% summarise(salary = median(salary), count = n())
     })
     
     # So that our plots can share a common y-axis
@@ -127,7 +127,8 @@ shinyServer(function(input, output, session) {
                        text = paste("Gender:", gender, "\nEthnic:", ethnic, "\nSalary:", salary))) + 
             geom_linerange(aes(x = ethnic, ymin = ymin, ymax = ymax), data = linerange(), inherit.aes = FALSE, col = "darkgrey") + 
             # It is important to put geom_point last so that it overlaps the lines
-            geom_point(size = 3) + 
+            geom_point(aes(size = count)) + 
+            scale_size_area(max_size = 4) +
             scaleY() +
             labs(x = "", y = "", col = "Gender", title = "Plot II: Salary By Ethnic Group") + 
             # Hide this y-axis, we have one on the left already
