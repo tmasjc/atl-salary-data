@@ -16,15 +16,15 @@ Dataset obtained from [data.world](https://data.world/brentbrewington/atlanta-ci
 ## Components
 
 - **Selector Panel** which allows user to select points using cursor (click-and-drag)
-- **Plot 1** displays the relationship of employee ``median salary`` by ``age``, seperated by ``gender``
-- **Plot 2** displays the relationship of employee ``median salary`` by ``ethnic group``, seperated by ``gender``
-- **Table** which tabulates count at each combination of ``ethnic group`` and ``gender``
+- **Plot I** displays the relationship of employee ``median salary`` by ``age``, seperated by ``gender``
+- **Plot II** displays the relationship of employee ``median salary`` by ``ethnic group``, seperated by ``gender``
+- **Table I** which tabulates count at each combination of ``ethnic group`` and ``gender``
 
 ![Screen Shot](screen.gif)
 
 ## Motivation
 
-This Shiny app is meant as a simple demonstration of how unbalanced dataset can be misleading at times. 
+This Shiny app is meant as a simple demonstration of how unbalanced dataset can be misleading at times. In statistics, this phenomenon is known as **[Simpson's paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox)** or the Yule–Simpson effect.
 
 If we look at male and female ``median salary`` at various ``age group``, we might observe that *in general, male earns higher pay than female*.
 
@@ -78,4 +78,4 @@ dat %>%
     theme(legend.position = "bottom")
 ```
 
-Tinker around the Shiny app to find out why is that so.
+Tinker around the Shiny app to explore the data and understand the logic behind.
