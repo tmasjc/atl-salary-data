@@ -22,20 +22,20 @@ shinyUI(fluidPage(
   fluidRow(
     column(4,
         wellPanel(
-            includeMarkdown("about_pt1.md"),
-            # Use NSE here to capture vatiable names. See ?aes_s
+            includeMarkdown("Text/pt1.md"),
+            # Use NSE here to capture variable names. See ?aes_s
             radioButtons("col", label = NULL, choices = list("Gender" = quote(gender), "Ethnic Group" = quote(ethnic))),
-            includeMarkdown("about_pt2.md")
+            includeMarkdown("Text/pt2.md")
             ),
         tags$h6("TABLE I "),
-        tags$p("Count at each combination of Ethnic - Gender"),
+        tags$p("Count of {Ethnic, Gender} subset."),
         verbatimTextOutput("summ"),
         br()
     ),
     column(8,
         # Enable user to select points using cursor
-        tags$h6("SELECTOR"),
-        tags$p("Click and drag to select points"),
+        tags$h6("SELECTOR PANEL"),
+        tags$p("Click and drag to select points."),
         plotOutput('selector', brush = brushOpts(id = "selector_brush")),
         # Split horizontal space evenly
         fluidRow(
