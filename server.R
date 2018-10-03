@@ -38,7 +38,10 @@ dat <- raw %>%
 shinyServer(function(input, output, session) {
     
     # Set ggplot2 theme 
-    old <- theme_set(theme_light() + theme(plot.title = element_text(size = 11), legend.position = "none"))
+    old <- theme_set(theme_light() + 
+                         theme(plot.title = element_text(size = 11), 
+                               legend.position = "none", 
+                               text = element_text(family = "Menlo")))
     
     # Selector window (Age + Gender / Ethnic)
     output$selector <- renderPlot({
@@ -56,8 +59,8 @@ shinyServer(function(input, output, session) {
             # retrieve legend for this plot only
             theme(
                 legend.position = c(0.1, 0.8), 
-                legend.title = element_text(size = 16, family = "mono"), 
-                legend.text = element_text(size = 15, family = "mono"), 
+                legend.title = element_text(size = 18), 
+                legend.text = element_text(size = 15), 
                 # legend.key = element_rect(colour = 'gray', linetype = 'dashed'),
                 legend.key.width = unit(1, "cm")
             )
@@ -101,7 +104,9 @@ shinyServer(function(input, output, session) {
     axisy <- reactive({
         # get range of y-axis value
         range_y <- range(grp_by_age()$salary, grp_by_ethnic()$salary)
-        scale_y_continuous(labels = scales::dollar, limits = range_y)
+        scale_y_continuous(labels = scales::dollar, 
+                           limits = range_y, 
+                           position = "left")
     })
         
     # Plot 1 - lineplot (Gender + Age)
