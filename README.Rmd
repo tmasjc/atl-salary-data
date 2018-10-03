@@ -4,48 +4,54 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, fig.width = 11)
+knitr::opts_chunk$set(echo = FALSE, fig.width = 7)
 ```
 
-### Overview
+## Overview
 
 This [Shiny app](https://tmasjc.shinyapps.io/atl_salary_data/) explores the Atlanta city employee salaries data for the Year 2015. In particular, the relationship between employee ``salary`` and variables such as ``gender``, ``age``, and ``ethnic group``.
 
 Dataset obtained from [data.world](https://data.world/brentbrewington/atlanta-city-employee-salaries), contributed by [Brent Brewington](https://github.com/bbrewington/atlanta-salary-data).
 
-The Shiny app consists of,
+## Components
 
-- A **_Selector Panel_** which allows user to select points using cursor (click-and-drag)
-- **_Plot 1_** displays the relationship of employee ``median salary`` by ``age group``, seperated by ``gender``
-- **_Plot 2_** displays the relationship of employee ``median salary`` by ``ethnic group``, seperated by ``gender``
-- A **_Cross Table_** which tabulates count at each combination of ``ethnic group`` and ``gender``
+- **Selector Panel** which allows user to select points using cursor (click-and-drag)
+- **Plot 1** displays the relationship of employee ``median salary`` by ``age``, seperated by ``gender``
+- **Plot 2** displays the relationship of employee ``median salary`` by ``ethnic group``, seperated by ``gender``
+- **Table** which tabulates count at each combination of ``ethnic group`` and ``gender``
 
-![Screen Shot](ss.png)
+![Screen Shot](screen.gif)
 
-### Motivation
+## Motivation
 
-This Shiny app is meant as a simple exercise to demonstrate how unbalanced dataset can be misleading at times. 
+This Shiny app is meant as a simple demonstration of how unbalanced dataset can be misleading at times. 
 
 If we look at male and female ``median salary`` at various ``age group``, we might observe that *in general, male earns higher pay than female*.
 
-```{r, warning=FALSE}
+```{r, warning=FALSE, message=FALSE}
 library(dplyr)
+library(stringr)
+library(ggplot2)
 
 raw <- readRDS("Data/atl_2015.RDS") %>% 
     rename(ethnic = ethnic.origin, job = job.title, salary = annual.salary) %>% 
     mutate(gender = factor(sex), ethnic = factor(ethnic)) %>% 
     as_tibble()
 
-x_agegrp <- raw %>% group_by(age) %>% summarise(n = n()) %>% filter(n < 10) %>% pull(age) 
-
-# Ethnic group that has a sample size smaller than 30
-x_ethgrp <- raw %>% group_by(ethnic) %>% summarise(n = n()) %>% filter(n < 30) %>% droplevels() %>% pull(ethnic) 
+which_less_than <- function(vec, n) {
+    x <- table(vec) < n
+    sort(unique(vec))[x]
+} 
+sub_age <- with(raw, age %>% which_less_than(10))
+sub_ethnic <- with(raw, ethnic %>% which_less_than(30))
 
 dat <- raw %>% 
-    # Filter small sample size group for both 'age' and 'ethnic'
-    filter(!age %in% x_agegrp &!ethnic %in% x_ethgrp) %>% 
-    # and simplify ethnic group to first word only
-    mutate(ethnic = factor(stringr::str_extract(ethnic, "^[A-Z]?[a-z]+")))
+    filter(!(age %in% sub_age), !(ethnic %in% sub_ethnic)) %>% 
+    mutate(ethnic = factor(str_extract(ethnic, "^[A-Z]?[a-z]+")))
+```
+
+```{r}
+old <- theme_set(theme_light() + theme(plot.title = element_text(size = 11), legend.position = "none"))
 ```
 
 ```{r}
@@ -59,7 +65,7 @@ dat %>%
     theme(legend.position = "bottom")
 ```
 
-However, if we look at male and female ``median salary`` by ``ethnic groups``, we notice that female's median salary does not seem to be lagging behind. *For Asian and White women, their median salary is actually higher than men by an obvious margin*.
+However, if we look at male and female ``median salary`` by ``ethnic groups``, we notice that female's median salary does not seem to lag behind. As a matter of fact, *both Asian and White women median salary is actually higher than men by an obvious margin*.
 
 ```{r}
 dat %>% 
