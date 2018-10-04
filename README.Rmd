@@ -79,3 +79,19 @@ dat %>%
 ```
 
 Tinker around the Shiny app to explore the data and understand the logic behind.
+
+## Deployment 
+
+This Shiny app is shipped with Docker, built on [rocker/tidyverse](https://hub.docker.com/r/rocker/tidyverse/) image.
+
+```bash
+# from this repo
+git clone git@github.com:tmasjc/ATL_Salary_Data.git
+
+cd ATL_Salary_Data
+
+# name your image 
+docker build -t atl_salary_data .
+```
+
+
