@@ -88,10 +88,19 @@ This Shiny app is shipped with Docker, built on [rocker/tidyverse](https://hub.d
 # from this repo
 git clone git@github.com:tmasjc/ATL_Salary_Data.git
 
+# move inside directory
 cd ATL_Salary_Data
 
 # name your image 
+# it may take a while to build
 docker build -t atl_salary_data .
+
+# start your container
+docker run -dp 3838:3838 atl_salary_data
+
+## You are set. Go to localhost:3838/atl_salary_data to view application. ##
 ```
+
+Or you can simply deploy it to Shiny server as per usual.
 
 
